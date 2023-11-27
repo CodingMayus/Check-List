@@ -1,0 +1,19 @@
+{
+"name":"Checklist",
+"description": "Personal stuff to stay organized",
+"version":"0.0000001",
+"manifest_version":3,
+"permissions":["storage","scripting","activeTab"],
+"background":{
+"service_worker":"background.js"
+},
+"action":{
+    "default_popup": "popup.html"
+},
+"content_scripts": [
+    {
+        "matches": ["<all_urls>"],
+        "js": ["content.js"]
+    }
+]
+}
