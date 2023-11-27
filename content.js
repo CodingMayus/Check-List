@@ -1,11 +1,11 @@
 
 
-function renderChecklist(){
+const renderChecklist= async()=>{
 
 const listDiv = document.createElement("div");
 listDiv.style.position = "fixed";
 listDiv.style.right = "0px";
-listDiv.style.top = "0px";
+listDiv.style.top = "360px";
 listDiv.style.backgroundColor = "white";
 listDiv.style.width = "250px";
 listDiv.style.height = "120px";
@@ -29,15 +29,20 @@ chrome.storage.sync.get("thingtodo", function (data) {
       listDiv.appendChild(buttoncheck);
       listDiv.appendChild(item);
       listDiv.appendChild(linebreak);
-      buttoncheck.addEventListener("click",()=>{
-        //create a new array that includes all the goals except the one mentioned.
-arr.splice(i,1);
-        chrome.storage.sync.set({ "thingtodo": arr});
-      buttoncheck.remove();
-      item.remove();
-      linebreak.remove();
-alert("Good Job!");
-      })
+      buttoncheck.addEventListener("click", (function(index) {
+        return function() {
+          alert(arr[index]); // Now this should display the correct value
+          arr.splice(index, 1);
+          const arrr = arr.filter(goals => goals !== arr[index]);
+    
+          chrome.storage.sync.set({ "thingtodo": arrr }, function () {
+            buttoncheck.remove();
+            item.remove();
+            linebreak.remove();
+            alert("Good Job!");
+          });
+        };
+      })(i));
    
     }
 
@@ -47,9 +52,12 @@ alert("Good Job!");
     console.log("No valid checklist found in storage.");
   }
 });
-}chrome.storage.onChanged.addListener(function(changes, namespace) {
+}
+chrome.storage.onChanged.addListener(function(changes, namespace) {
   if (changes.thingtodo) {
     const updatedGoals = changes.thingtodo.newValue;
-    renderChecklist();
+    //renderChecklist();
   }
 });
+renderChecklist();
+// renderChecklist();
